@@ -22,8 +22,9 @@ export default function Reviews() {
 
   // Filter and sort reviews
   const filteredReviews = reviews?.filter(review => {
-    const matchesSearch = review.companyName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         review.content.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesSearch = review.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         review.content.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         review.author.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesRating = filterRating === "all" || review.rating.toString() === filterRating;
     return matchesSearch && matchesRating;
   }) || [];
@@ -31,15 +32,19 @@ export default function Reviews() {
   const sortedReviews = [...filteredReviews].sort((a, b) => {
     switch (sortBy) {
       case "newest":
-        return new Date(b.reviewDate).getTime() - new Date(a.reviewDate).getTime();
+        const dateB = b.created_at ? new Date(b.created_at).getTime() : 0;
+        const dateA = a.created_at ? new Date(a.created_at).getTime() : 0;
+        return dateB - dateA;
       case "oldest":
-        return new Date(a.reviewDate).getTime() - new Date(b.reviewDate).getTime();
+        const dateA2 = a.created_at ? new Date(a.created_at).getTime() : 0;
+        const dateB2 = b.created_at ? new Date(b.created_at).getTime() : 0;
+        return dateA2 - dateB2;
       case "rating-high":
         return b.rating - a.rating;
       case "rating-low":
         return a.rating - b.rating;
       case "company":
-        return a.companyName.localeCompare(b.companyName);
+        return a.title.localeCompare(b.title);
       default:
         return 0;
     }
@@ -95,7 +100,7 @@ export default function Reviews() {
             <div className="relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
               <Input
-                placeholder="Search companies or reviews..."
+                placeholder="Search reviews or authors..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="pl-10"

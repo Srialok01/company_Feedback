@@ -8,8 +8,9 @@ interface ReviewCardProps {
 }
 
 export function ReviewCard({ review }: ReviewCardProps) {
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
+  const formatDate = (date: Date | string | null) => {
+    if (!date) return 'No date';
+    return new Date(date).toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'long',
       day: 'numeric'
@@ -34,10 +35,10 @@ export function ReviewCard({ review }: ReviewCardProps) {
 
   return (
     <Card className="bg-white hover:shadow-lg transition-shadow duration-300 overflow-hidden">
-      {review.imageUrl && (
+      {review.image_url && (
         <img
-          src={review.imageUrl}
-          alt={`${review.companyName} workspace`}
+          src={review.image_url}
+          alt={`${review.title} image`}
           className="w-full h-48 object-cover"
         />
       )}
@@ -45,7 +46,7 @@ export function ReviewCard({ review }: ReviewCardProps) {
         <div className="flex items-center justify-between mb-3">
           <span className="text-sm text-gray-500">
             <Calendar className="inline w-4 h-4 mr-1" />
-            {formatDate(review.reviewDate)}
+            {formatDate(review.created_at)}
           </span>
           <div className="flex items-center">
             {renderStars(review.rating)}
@@ -53,7 +54,7 @@ export function ReviewCard({ review }: ReviewCardProps) {
         </div>
         
         <h3 className="text-lg font-semibold text-gray-900 mb-3">
-          {review.companyName}
+          {review.title}
         </h3>
         
         <p className="text-gray-600 text-sm mb-4 line-clamp-3">
@@ -67,14 +68,9 @@ export function ReviewCard({ review }: ReviewCardProps) {
               <ExternalLink className="inline w-4 h-4 ml-1" />
             </button>
           </Link>
-          <a
-            href={review.websiteUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-gray-400 hover:text-gray-600"
-          >
-            <ExternalLink className="w-4 h-4" />
-          </a>
+          <span className="text-sm text-gray-500">
+            By {review.author}
+          </span>
         </div>
       </CardContent>
     </Card>

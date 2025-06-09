@@ -44,7 +44,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getAllReviews(): Promise<Review[]> {
-    return await db.select().from(reviews).orderBy(reviews.createdAt);
+    return await db.select().from(reviews).orderBy(reviews.created_at);
   }
 
   async createReview(insertReview: InsertReview): Promise<Review> {

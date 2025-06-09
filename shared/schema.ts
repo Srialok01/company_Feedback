@@ -26,22 +26,20 @@ export const users = pgTable("users", {
 
 export const reviews = pgTable("reviews", {
   id: serial("id").primaryKey(),
-  companyName: text("company_name").notNull(),
-  reviewDate: text("review_date").notNull(),
+  title: text("title").notNull(),
   content: text("content").notNull(),
-  imageUrl: text("image_url"),
-  websiteUrl: text("website_url").notNull(),
   rating: integer("rating").notNull(),
-  createdAt: timestamp("created_at").defaultNow(),
+  author: text("author").notNull(),
+  image_url: text("image_url"),
+  created_at: timestamp("created_at").defaultNow(),
 });
 
 export const insertReviewSchema = createInsertSchema(reviews).omit({
   id: true,
-  createdAt: true,
+  created_at: true,
 }).extend({
   rating: z.number().min(1).max(5),
-  content: z.string().min(100, "Review content must be at least 100 characters"),
-  websiteUrl: z.string().url("Please enter a valid website URL"),
+  content: z.string().min(10, "Review content must be at least 10 characters"),
 });
 
 export type UpsertUser = typeof users.$inferInsert;
